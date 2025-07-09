@@ -18,6 +18,7 @@ class TicTacToe:
         self.root.title('Tic-Tac-Toe')
         self.board=[" "]*9
         self.buttons=[]
+        self.scores={'X':0,'O':0,"Draw":0}
         for i in range(9):
             btn=tk.Button(root,text=" ",font=('Helvetica',20),height=3,width=6,command=lambda idx=i:self.player(idx))
             btn.grid(row=i//3,column=i%3)
@@ -27,12 +28,12 @@ class TicTacToe:
         restart.grid(row=3, column=0, columnspan=3, pady=10)
 
     def player(self,idx):
-        if(self.board[idx]!=' '):
+        if self.board[idx]!=' ':
             return
-        if(TicTacToe.clicked==False):
+        if not TicTacToe.clicked:
             self.make_moves(idx,'X')
             TicTacToe.clicked=True
-        elif(TicTacToe.clicked==True):
+        elif TicTacToe.clicked:
             self.make_moves(idx,'O')
             TicTacToe.clicked=False
         self.game_over()
@@ -43,17 +44,21 @@ class TicTacToe:
     def game_over(self):
         result=is_winner(self.board)
         if result=='Draw':
-            messagebox.showinfo(title='Tic-Tac-Toe',message='Its a Draw')
+            msg="Its a Draw"
+            self.scores['Draw']+=1
             self.reset()
         elif result is None:
             return None
         elif result=='X':
             msg='X wins'
+            self.scores['X']+=1
         elif result=='O':
             msg='O wins'
+            self.scores['O']+=1
         else:
             return False
-        again = messagebox.askyesno("Tic-Tac-Toe", f"{msg}\n\nPlay again?")
+        messagebox.showinfo("Tic-Tac-Toe", msg)
+        again = messagebox.askyesno(title='Tic-Tac-Toe',message=f"{self.scores}\n\nPlay again?")
         if again:
             self.reset()
         else:
